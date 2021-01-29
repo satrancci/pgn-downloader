@@ -17,10 +17,28 @@ class App extends React.Component {
     return (
       <div className="ui container" style={{ marginTop: '10px' }}>
         <SearchBar onSubmit={this.onSearchSubmit} />
-        <p><img src={this.state.avatar} /> </p>
-        <p><b>{this.state.username? this.state.username : null} </b></p>
-        <p>{this.state.followers ? `Followers: ${this.state.followers}` : null} </p>
-        <p>{this.state.url ? <a href={this.state.url}> Chess.com Profile </a> : null} </p>
+        {this.state.username ? 
+            <div class="ui card">
+                <div class="image">
+                    <img src={this.state.avatar} />
+                </div>
+                <div class="content">
+                    <a class="header">{this.state.username}</a>
+                </div>
+                <div class="extra content">
+                    <a>
+                    <i class="user icon"></i>
+                    {`Followers: ${this.state.followers}`}
+                    </a>
+                <div class="extra content">
+                    <a href={this.state.url}>
+                    <i class="chess king icon"></i>
+                    Chess.com Profile
+                    </a>
+                </div>
+                </div>
+            </div>
+        : null}
       </div>
     );
   }
