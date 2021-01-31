@@ -1,8 +1,5 @@
 import axios from 'axios';
 
 export default axios.create({
-  baseURL: 'https://api.chess.com/pub/leaderboards'
+  baseURL: 'https://api.chess.com/pub/player'
 });
-
-
-// https://api.chess.com/pub/player

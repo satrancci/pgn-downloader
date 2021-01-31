@@ -6,7 +6,7 @@ const SearchBar = props => {
   const onFormSubmit = event => {
     event.preventDefault();
 
-    props.onSubmit();
+    props.onSubmit(username);
   };
 
   return (
