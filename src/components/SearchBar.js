@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const SearchBar = props => {
   const [username, setUsername] = useState('');
-  const [timeControl, setTimeControl] = useState(null);
+  const [timeControl, setTimeControl] = useState('');
 
   const onFormSubmit = event => {
     event.preventDefault();
@@ -16,6 +16,7 @@ const SearchBar = props => {
         <div className="field">
           <label>Chess.com username</label>
           <input
+            placeholder="username"
             type="text"
             value={username}
             onChange={e => setUsername(e.target.value)}
@@ -24,6 +25,7 @@ const SearchBar = props => {
         <div className="field">
           <label>Time Control</label>
           <input
+            placeholder="choose ONLY one from {rapid, blitz}"
             type="text"
             value={timeControl}
             onChange={e => setTimeControl(e.target.value)}

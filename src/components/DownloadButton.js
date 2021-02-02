@@ -1,13 +1,14 @@
 import React from 'react';
 
-const DownloadButton = ({games}) => {
-
+const DownloadButton = ({username, timeControl, games}) => {
     const pgns = [games.map(game => game.pgn)];
 
+    const fileName = `${username}_${timeControl}.pgn`;
+    
     const url = window.URL.createObjectURL(new Blob(pgns));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'games.pgn');
+    link.setAttribute('download', fileName);
     document.body.appendChild(link);
 
 
@@ -15,7 +16,7 @@ const DownloadButton = ({games}) => {
         <button onClick={() => {
             {link.click()}
         }}>
-            Download games
+            Download <b>{`${fileName}`} </b>
         </button>
     );
 }
