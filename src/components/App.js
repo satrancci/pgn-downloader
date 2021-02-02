@@ -10,10 +10,10 @@ const App = () => {
   const [download, setDownload] = useState(false);
  
   // we will pass onSearchSubmit as a prop to the SearchBar component
-  const onSearchSubmit = async (usernameToSearch) => {
+  const onSearchSubmit = async (usernameToSearch, timeControl) => {
     const response = await chesscom.get(`/${usernameToSearch}/games/2021/01`);
 
-    setGames(response.data.games.filter(game => game.time_class === 'rapid'));
+    setGames(response.data.games.filter(game => game.time_class === `${timeControl}`));
     setDownload(true);
 
   };
