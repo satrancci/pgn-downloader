@@ -71,8 +71,7 @@ const App = () => {
   return (
     <div className="ui container">
       <Form onSubmit={interactWithChessComApi} />
-      Games: {games.length}  
-      {username && <DownloadButton username={username} timeControl={timeControl} games={games} />}
+      {games.length > 0 && <DownloadButton username={username} timeControl={timeControl} games={games} />}
       {downloading && <LoadGames/>}
     </div>
   );

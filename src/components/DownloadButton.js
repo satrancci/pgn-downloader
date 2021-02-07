@@ -16,7 +16,7 @@ const DownloadButton = ({username, timeControl, games}) => {
         <button onClick={() => {
             {link.click()}
         }}>
-            Download <b>{`${fileName}`} </b>
+            Download <b>{`${fileName}`}</b> ({`${games.length}`} games)
         </button>
     );
 }
