@@ -1,6 +1,6 @@
 import React from "react";
 
-const LoadGames = () => {
+const Spinner = () => {
   return (
     <div className="ui segment">
       <p>Fetching the games from Chess.com's API...</p>
@@ -11,4 +11,4 @@ const LoadGames = () => {
   );
 };
 
-export default LoadGames;
+export default Spinner;

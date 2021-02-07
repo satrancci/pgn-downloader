@@ -13,10 +13,11 @@ const DownloadButton = ({username, timeControl, games}) => {
 
 
     return (
-        <button onClick={() => {
+        <button className="ui button active ui blue"  onClick={() => {
             {link.click()}
         }}>
-            Download <b>{`${fileName}`}</b> ({`${games.length}`} games)
+            <i className="download icon"></i>
+            Download {`${fileName}`} ({`${games.length}`} games)
         </button>
     );
 }

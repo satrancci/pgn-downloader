@@ -3,7 +3,7 @@ import { Promise } from 'bluebird';
 
 import DownloadButton from "./DownloadButton";
 import Form from "./Form";
-import LoadGames from './LoadGames';
+import Spinner from './Spinner';
 import axios from "axios";
 import chesscom from "../apis/chesscom";
 
@@ -71,8 +71,10 @@ const App = () => {
   return (
     <div className="ui container">
       <Form onSubmit={interactWithChessComApi} />
+      <div>
       {games.length > 0 && <DownloadButton username={username} timeControl={timeControl} games={games} />}
-      {downloading && <LoadGames/>}
+      {downloading && <Spinner/>}
+      </div>
     </div>
   );
 };
