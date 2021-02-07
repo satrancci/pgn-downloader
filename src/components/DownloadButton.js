@@ -3,7 +3,7 @@ import React from 'react';
 const DownloadButton = ({username, timeControl, games}) => {
     const pgns = [games.map(game => game.pgn)];
 
-    const fileName = `${username}_${timeControl}.pgn`;
+    const fileName = `${username.toLowerCase()}_${timeControl}.pgn`;
     
     const url = window.URL.createObjectURL(new Blob(pgns));
     const link = document.createElement('a');

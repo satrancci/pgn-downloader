@@ -1,56 +1,76 @@
-import React, { useState } from 'react';
-import SearchBar from './SearchBar';
-import DownloadButton from './DownloadButton';
+import React, { useState } from "react";
+import DownloadButton from "./DownloadButton";
+import Form from "./Form";
+import axios from "axios";
+import chesscom from "../apis/chesscom";
 
-import chesscom from '../apis/chesscom';
+
+const checkUserExists = async (username) => {
+  const playerExistsResponse = await chesscom.get(`/${username}`);
+  return playerExistsResponse;
+};
+
+const fetchGamesArchive = async (username) => {
+  const response = await chesscom.get(`/${username}/games/archives`);
+  return response.data.archives;
+};
+
 
 
 const App = () => {
+
+  const [games, setGames] = useState([]);
   const [username, setUsername] = useState('');
-  const [timeClass, setTimeClass] = useState('');
-  const [games,setGames] = useState([]);
-  const [download, setDownload] = useState(false);
-  const [allTimeControls] = useState(['rapid', 'blitz']);
- 
-  // we will pass onSearchSubmit as a prop to the SearchBar component
+  const [timeControl, setTimeControl] = useState('');
 
-  const onSearchSubmit = async (usernameToSearch, timeControl) => {
-    if (usernameToSearch === '' || timeControl === '') {
-      alert('Field values cannot be empty!');
-      setDownload(false);
-      return;
-    }
-
-    if (!allTimeControls.includes(timeControl)){
-      alert('The time control that you specified is invalid!');
-      setDownload(false);
-      return;
-    }
-
-    try {
-      const playerExistsResponse = await chesscom.get(`/${usernameToSearch}`);
-    } catch (e) {
-      alert('The username that you specified is most likely invalid!');
-      //console.log('we got an error:', e); // TODO: need a more user-friendly error message
-      setDownload(false);
-      return;
-    }
-
-    const response = await chesscom.get(`/${usernameToSearch}/games/2021/01`);
-    setGames(response.data.games.filter(game => game.time_class === `${timeControl}`));
-    setUsername(usernameToSearch);
-    setTimeClass(timeControl);
-    setDownload(true);
+  const fetchGames = async (values, archives) => {
+    Promise.all(archives.map((url) => axios.get(url)))
+      .then((responses) => Promise.all(responses.map((res) => res.data.games)))
+      .then((results) => {
+        const concatGames = Object.values(
+          results
+            .map((month) =>
+              month.filter((game) => game.time_class === `${values.timeControl}`)
+            )
+            .flat()
+        );
+        setGames(concatGames);
+        setUsername(values.username);
+        setTimeControl(values.timeControl);
+      });
   };
 
 
+  const interactWithChessComApi = async (values) => {
+    checkUserExists(values.username)
+      .then(() => {
+        fetchGamesArchive(values.username)
+          .then((archives) => {
+            fetchGames(values, archives)
+            .then(() => {
+              console.log("Games fetched!");
+            })
+            .catch((e) => {
+              console.log("Could not fetch the games", e);
+            });
+          })
+          .catch((e) => {
+            console.log("Could not fetch the archive", e);
+          });
+      })
+      .catch((e) => {
+        alert("The username that you specified is invalid!");
+      });
+  };
+  
+  
   return (
-    <div className="ui container" style={{ marginTop: '10px' }}>
-      <SearchBar onSubmit={onSearchSubmit} />
-      {download === true ? <DownloadButton username={username} timeControl={timeClass} games={games}/> : null}
+    <div className="ui container">
+      <Form onSubmit={interactWithChessComApi} />
+      Games: {games.length}  
+      {username && <DownloadButton username={username} timeControl={timeControl} games={games} />}
     </div>
   );
-
-}
+};
 
 export default App;
