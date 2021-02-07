@@ -3,6 +3,7 @@ import DownloadButton from "./DownloadButton";
 import Form from "./Form";
 import axios from "axios";
 import chesscom from "../apis/chesscom";
+import { Promise } from 'bluebird';
 
 
 const checkUserExists = async (username) => {
@@ -16,30 +17,27 @@ const fetchGamesArchive = async (username) => {
 };
 
 
-
 const App = () => {
 
   const [games, setGames] = useState([]);
   const [username, setUsername] = useState('');
   const [timeControl, setTimeControl] = useState('');
 
-  const fetchGames = async (values, archives) => {
-    Promise.all(archives.map((url) => axios.get(url)))
-      .then((responses) => Promise.all(responses.map((res) => res.data.games)))
-      .then((results) => {
-        const concatGames = Object.values(
-          results
-            .map((month) =>
-              month.filter((game) => game.time_class === `${values.timeControl}`)
-            )
-            .flat()
-        );
-        setGames(concatGames);
-        setUsername(values.username);
-        setTimeControl(values.timeControl);
-      });
-  };
 
+  const fetchGames = async(values, archives) => {
+    const responses = await Promise.map(archives, url => axios.get(url), {concurrency: 2} ); // Chess.com API allows three concurrent requests per each IP address
+    const monthly_games = responses.map((res) => res.data.games);
+    const concatGames = Object.values(
+      monthly_games
+        .map((month) =>
+          month.filter((game) => game.time_class === `${values.timeControl}`)
+        )
+        .flat()
+      );
+      setGames(concatGames);
+      setUsername(values.username);
+      setTimeControl(values.timeControl);
+  }
 
   const interactWithChessComApi = async (values) => {
     checkUserExists(values.username)
