@@ -1,9 +1,12 @@
 import React, { useState } from "react";
+import { Promise } from 'bluebird';
+
 import DownloadButton from "./DownloadButton";
 import Form from "./Form";
+import LoadGames from './LoadGames';
 import axios from "axios";
 import chesscom from "../apis/chesscom";
-import { Promise } from 'bluebird';
+
 
 
 const checkUserExists = async (username) => {
@@ -22,9 +25,11 @@ const App = () => {
   const [games, setGames] = useState([]);
   const [username, setUsername] = useState('');
   const [timeControl, setTimeControl] = useState('');
+  const [downloading, setDownloading] = useState(false);
 
 
   const fetchGames = async(values, archives) => {
+    setDownloading(true);
     const responses = await Promise.map(archives, url => axios.get(url), {concurrency: 2} ); // Chess.com API allows three concurrent requests per each IP address
     const monthly_games = responses.map((res) => res.data.games);
     const concatGames = Object.values(
@@ -37,6 +42,7 @@ const App = () => {
       setGames(concatGames);
       setUsername(values.username);
       setTimeControl(values.timeControl);
+      setDownloading(false);
   }
 
   const interactWithChessComApi = async (values) => {
@@ -67,6 +73,7 @@ const App = () => {
       <Form onSubmit={interactWithChessComApi} />
       Games: {games.length}  
       {username && <DownloadButton username={username} timeControl={timeControl} games={games} />}
+      {downloading && <LoadGames/>}
     </div>
   );
 };
