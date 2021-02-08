@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Form = (props) => {
 
@@ -34,6 +34,15 @@ const Form = (props) => {
       }
     setSubmitted(true);
   };
+
+useEffect(() => {
+  const cleanUpForm = async () => {
+    await new Promise(r => setTimeout(r, 1000)); // make the transition more user-friendly
+    setSubmitted(false);
+    setValid(false);
+  } 
+  cleanUpForm();
+}, [props.onSubmit])
 
 
   return (
