@@ -74,7 +74,7 @@ const App = () => {
     <div className="ui container">
       <Form onSubmit={interactWithChessComApi} />
       <div>
-        {games.length > 0 && (
+        {!downloading && games.length > 0 && (
           <DownloadButton
             username={username}
             timeControl={timeControl}
