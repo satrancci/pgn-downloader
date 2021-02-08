@@ -49,6 +49,7 @@ const App = () => {
 
 
   const interactWithChessComApi = async (values) => {
+    await new Promise(r => setTimeout(r, 1000)); // make the transition more user-friendly
     checkUserExists(values.username)
       .then(() => {
         fetchGamesArchive(values.username)

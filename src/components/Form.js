@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+
+const TIME_CONTROLS = ['rapid', 'blitz'];
 const Form = (props) => {
 
   const [values, setValues] = useState({
@@ -28,7 +30,7 @@ const Form = (props) => {
 
   const onFormSubmit = (e) => {
     e.preventDefault();
-    if (values.username && values.timeControl) {
+    if (values.username && values.timeControl && TIME_CONTROLS.includes(values.timeControl)) {
         setValid(true);
         props.onSubmit(values);
       }
@@ -73,10 +75,10 @@ useEffect(() => {
               value={values.timeControl}
               onChange={onTimeControlInputChange}
             />
-            {submitted && !values.timeControl && (
+            {submitted && (!values.timeControl || !TIME_CONTROLS.includes(values.timeControl)) && (
               <span id="time-control-error" style={{ color: 'red' }}>
                 Please enter the time control for the games that you want to
-                fetch
+                fetch: {TIME_CONTROLS.map(tc => `${tc} ` )}
               </span>
             )}
           </div>
