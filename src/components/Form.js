@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from "react";
+import { checkUserExists } from "../utils/utils";
 
+const TIME_CONTROLS = ["rapid", "blitz"];
 
-const TIME_CONTROLS = ['rapid', 'blitz'];
 const Form = (props) => {
-
   const [values, setValues] = useState({
     username: "",
     timeControl: "",
   });
   const [submitted, setSubmitted] = useState(false);
   const [valid, setValid] = useState(false);
-
+  const [userExists, setUserExists] = useState(undefined);
 
   const onUsernameInputChange = (e) => {
     setValues((values) => ({
       ...values,
       username: e.target.value,
     }));
-    setSubmitted(false);
   };
 
   const onTimeControlInputChange = (e) => {
@@ -25,27 +24,36 @@ const Form = (props) => {
       ...values,
       timeControl: e.target.value,
     }));
-    setSubmitted(false);
   };
 
-  const onFormSubmit = (e) => {
+  const onFormSubmit = async (e) => {
     e.preventDefault();
-    if (values.username && values.timeControl && TIME_CONTROLS.includes(values.timeControl)) {
+    if (
+      values.username &&
+      values.timeControl &&
+      TIME_CONTROLS.includes(values.timeControl)
+    ) {
+      const userExists = await checkUserExists(values.username);
+      if (userExists) {
+        setUserExists(true);
         setValid(true);
         props.onSubmit(values);
+      } else {
+        setUserExists(false);
       }
+    }
     setSubmitted(true);
   };
 
-useEffect(() => {
-  const cleanUpForm = async () => {
-    await new Promise(r => setTimeout(r, 1000)); // make the transition more user-friendly
-    setSubmitted(false);
-    setValid(false);
-  } 
-  cleanUpForm();
-}, [props.onSubmit])
-
+  useEffect(() => {
+    const cleanUpForm = async () => {
+      await new Promise((r) => setTimeout(r, 1000)); // make the transition more user-friendly
+      setUserExists(undefined);
+      setSubmitted(false);
+      setValid(false);
+    };
+    cleanUpForm();
+  }, [props.onSubmit]);
 
   return (
     <div className="ui segment">
@@ -62,7 +70,14 @@ useEffect(() => {
               onChange={onUsernameInputChange}
             />
             {submitted && !values.username && (
-              <span id="username-error" style={{ color: 'red' }} >Please enter your username</span >
+              <span id="username-error" style={{ color: "red" }}>
+                Please enter your username
+              </span>
+            )}
+            {submitted && values.username && userExists === false && (
+              <span id="username-error" style={{ color: "red" }}>
+                This user is not registered on Chess.com!
+              </span>
             )}
           </div>
           <div className="field">
@@ -75,12 +90,14 @@ useEffect(() => {
               value={values.timeControl}
               onChange={onTimeControlInputChange}
             />
-            {submitted && (!values.timeControl || !TIME_CONTROLS.includes(values.timeControl)) && (
-              <span id="time-control-error" style={{ color: 'red' }}>
-                Please enter the time control for the games that you want to
-                fetch: {TIME_CONTROLS.map(tc => `${tc} ` )}
-              </span>
-            )}
+            {submitted &&
+              (!values.timeControl ||
+                !TIME_CONTROLS.includes(values.timeControl)) && (
+                <span id="time-control-error" style={{ color: "red" }}>
+                  Please enter the time control for the games that you want to
+                  fetch: {TIME_CONTROLS.map((tc) => `${tc} `)}
+                </span>
+              )}
           </div>
           <button className="ui blue submit button" type="submit">
             Submit
@@ -88,12 +105,14 @@ useEffect(() => {
         </form>
       </div>
       {valid && submitted && (
-            <div className="success-message" style={{ marginTop: '10px', color: 'green' }}>
-              Submitted!
-            </div>
-          )}
+        <div
+          className="success-message"
+          style={{ marginTop: "10px", color: "green" }}
+        >
+          Submitted!
+        </div>
+      )}
     </div>
-
   );
 };
 

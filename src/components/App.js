@@ -7,15 +7,7 @@ import Spinner from "./Spinner";
 import axios from "axios";
 import chesscom from "../apis/chesscom";
 
-const checkUserExists = async (username) => {
-  const playerExistsResponse = await chesscom.get(`/${username}`);
-  return playerExistsResponse;
-};
-
-const fetchGamesArchive = async (username) => {
-  const response = await chesscom.get(`/${username}/games/archives`);
-  return response.data.archives;
-};
+import { fetchGamesArchive } from "../utils/utils";
 
 const App = () => {
   const [games, setGames] = useState([]);
@@ -40,34 +32,27 @@ const App = () => {
       setGames(concatGames);
       setUsername(values.username);
       setTimeControl(values.timeControl);
-    } catch(e) {
-     alert('There was a problem fetching the games. Please try again.');
+    } catch (e) {
+      alert("There was a problem fetching the games. Please try again.");
     } finally {
       setDownloading(false);
     }
   };
 
-
   const interactWithChessComApi = async (values) => {
-    await new Promise(r => setTimeout(r, 1000)); // make the transition more user-friendly
-    checkUserExists(values.username)
-      .then(() => {
-        fetchGamesArchive(values.username)
-          .then((archives) => {
-            fetchGames(values, archives)
-              .then(() => {
-                console.log("Games fetched!");
-              })
-              .catch((e) => {
-                alert("Could not fetch the games. Please try again.");
-              });
+    await new Promise((r) => setTimeout(r, 1000)); // make the transition more user-friendly
+    fetchGamesArchive(values.username)
+      .then((archives) => {
+        fetchGames(values, archives)
+          .then(() => {
+            console.log("Games fetched!");
           })
           .catch((e) => {
-            alert("Could not fetch the archive. Please try again.");
+            alert("Could not fetch the games. Please try again.");
           });
       })
       .catch((e) => {
-        alert("The username that you specified is invalid!");
+        alert("Could not fetch the archive. Please try again.");
       });
   };
 
