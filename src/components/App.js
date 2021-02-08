@@ -25,22 +25,28 @@ const App = () => {
 
   const fetchGames = async (values, archives) => {
     setDownloading(true);
-    const responses = await Promise.map(archives, (url) => axios.get(url), {
-      concurrency: 1,
-    }); // Chess.com API allows three concurrent requests per each IP address
-    const monthly_games = responses.map((res) => res.data.games);
-    const concatGames = Object.values(
-      monthly_games
-        .map((month) =>
-          month.filter((game) => game.time_class === `${values.timeControl}`)
-        )
-        .flat()
-    );
-    setGames(concatGames);
-    setUsername(values.username);
-    setTimeControl(values.timeControl);
-    setDownloading(false);
+    try {
+      const responses = await Promise.map(archives, (url) => axios.get(url), {
+        concurrency: 1,
+      }); // Chess.com API allows three concurrent requests per each IP address
+      const monthly_games = responses.map((res) => res.data.games);
+      const concatGames = Object.values(
+        monthly_games
+          .map((month) =>
+            month.filter((game) => game.time_class === `${values.timeControl}`)
+          )
+          .flat()
+      );
+      setGames(concatGames);
+      setUsername(values.username);
+      setTimeControl(values.timeControl);
+    } catch(e) {
+     alert('There was a problem fetching the games. Please try again.');
+    } finally {
+      setDownloading(false);
+    }
   };
+
 
   const interactWithChessComApi = async (values) => {
     checkUserExists(values.username)
@@ -52,11 +58,11 @@ const App = () => {
                 console.log("Games fetched!");
               })
               .catch((e) => {
-                console.log("Could not fetch the games", e);
+                alert("Could not fetch the games. Please try again.");
               });
           })
           .catch((e) => {
-            console.log("Could not fetch the archive", e);
+            alert("Could not fetch the archive. Please try again.");
           });
       })
       .catch((e) => {
