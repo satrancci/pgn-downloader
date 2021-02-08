@@ -8,6 +8,7 @@ The primary goal is to facilitate the process of downloading games from [Chess.c
 
 # Ideas for further improvements:
 
+- Better error handling, testing
 - Add more filters. For example:
     * games played within a given time period
     * other time controls (as of now, only rapid and blitz games can be fetched)
