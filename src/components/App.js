@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Promise } from "bluebird";
 import DownloadButton from "./DownloadButton";
 import Form from "./Form";
-import Spinner from "./Spinner";
 import axios from "axios";
 import { fetchGamesArchive } from "../utils/utils";
 
