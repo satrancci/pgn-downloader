@@ -1,73 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Promise } from "bluebird";
-
 import DownloadButton from "./DownloadButton";
 import Form from "./Form";
 import Spinner from "./Spinner";
 import axios from "axios";
-import chesscom from "../apis/chesscom";
-
 import { fetchGamesArchive } from "../utils/utils";
 
 const App = () => {
+
+  const [formValues, setFormValues] = useState({});
   const [games, setGames] = useState([]);
-  const [username, setUsername] = useState("");
-  const [timeControl, setTimeControl] = useState("");
-  const [downloading, setDownloading] = useState(false);
 
-  const fetchGames = async (values, archives) => {
-    setDownloading(true);
-    try {
-      const responses = await Promise.map(archives, (url) => axios.get(url), {
-        concurrency: 1,
-      }); // Chess.com API allows three concurrent requests per each IP address
-      const monthly_games = responses.map((res) => res.data.games);
-      const concatGames = Object.values(
-        monthly_games
-          .map((month) =>
-            month.filter((game) => game.time_class === `${values.timeControl}`)
-          )
-          .flat()
-      );
-      setGames(concatGames);
-      setUsername(values.username);
-      setTimeControl(values.timeControl);
-    } catch (e) {
-      alert("There was a problem fetching the games. Please try again.");
-    } finally {
-      setDownloading(false);
-    }
+  const onFormSubmitCallback = (values) => {
+    setFormValues(values);
   };
 
-  const interactWithChessComApi = async (values) => {
-    await new Promise((r) => setTimeout(r, 1000)); // make the transition more user-friendly
-    fetchGamesArchive(values.username)
-      .then((archives) => {
-        fetchGames(values, archives)
-          .then(() => {
-            console.log("Games fetched!");
-          })
-          .catch((e) => {
-            alert("Could not fetch the games. Please try again.");
+  useEffect(() => {
+
+    const fetchGamesHelper = async (values, archives) => {
+      Promise.each(archives, (url) => {
+        return Promise.delay(1000).then(() => {
+          axios.get(url).then((res) => {
+            const monthly_games = res.data.games;
+            const concatGames = Object.values(
+              monthly_games.filter(
+                (game) => game.time_class === `${values.timeControl}`
+              )
+            ).flat();
+            setGames(games => games.concat(concatGames));
+            return null;
           });
-      })
-      .catch((e) => {
-        alert("Could not fetch the archive. Please try again.");
+        });
       });
-  };
+    };
+
+    const fetchGames = async (values) => {
+      try {
+        const archives = await fetchGamesArchive(values.username);
+        await fetchGamesHelper(values, archives);
+      } catch (e) {
+        alert('Something went wrong. Please try again.');
+      }
+    }
+
+    fetchGames(formValues);
+    setTimeout(() => { setGames([]); }, 1000); // cleanup after the download
+
+  }, [formValues])
 
   return (
     <div className="ui container">
-      <Form onSubmit={interactWithChessComApi} />
+      <Form onSubmit={onFormSubmitCallback} />
       <div>
-        {!downloading && games.length > 0 && (
+        {games && games.length > 0 && (
           <DownloadButton
-            username={username}
-            timeControl={timeControl}
+            username={formValues.username}
+            timeControl={formValues.timeControl}
             games={games}
           />
         )}
-        {downloading && <Spinner />}
       </div>
     </div>
   );

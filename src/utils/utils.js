@@ -9,7 +9,13 @@ export const checkUserExists = async (username) => {
     }
   };
 
+// returns an array of urls
 export const fetchGamesArchive = async (username) => {
-  const response = await chesscom.get(`/${username}/games/archives`);
-  return response.data.archives;
+  try {
+    const response = await chesscom.get(`/${username}/games/archives`);
+    return response.data.archives;
+  } catch (e) {
+    alert('Could not fetch the archive. Please try again');
+  }
+
 };
