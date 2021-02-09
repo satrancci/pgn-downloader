@@ -48,7 +48,7 @@ const Form = (props) => {
 
   useEffect(() => {
     const cleanUpForm = async () => {
-      //await new Promise((r) => setTimeout(r, 1000)); // make the transition more user-friendly
+      await new Promise((r) => setTimeout(r, 5000)); // make the transition more user-friendly
       setUserExists(undefined);
       setSubmitted(false);
       setValid(false);
