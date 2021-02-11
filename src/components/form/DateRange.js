@@ -10,7 +10,7 @@ const DateRange = (props) => {
         <input
           id="date-range-from"
           type="text"
-          placeholder="MM-YYYY"
+          placeholder="YYYY/MM"
           value={props.dateRangeFrom}
           onChange={e => props.onFromInputChangeCallback(e.target.value)}
         />
@@ -23,7 +23,7 @@ const DateRange = (props) => {
         <input 
           id="date-range-to"
           type="text" 
-          placeholder="MM-YYYY" 
+          placeholder="YYYY/MM" 
           value={props.dateRangeTo}
           onChange={e => props.onToInputChangeCallback(e.target.value)}
         />

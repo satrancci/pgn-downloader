@@ -11,14 +11,15 @@ import Result from "./form/Result";
 import OpponentRatingRange from "./form/OpponentRatingRange";
 import SubmitButton from "./form/SubmitButton";
 
+const CUR_DATE = (new Date().getUTCFullYear())+'/'+'0'+(new Date().getUTCMonth()+1);
 
 const Form = (props) => {
 
 
   const [values, setValues] = useState({
     username: "",
-    dateRangeFrom: "",
-    dateRangeTo: "",
+    dateRangeFrom: "2000/01",
+    dateRangeTo: `${CUR_DATE}`,
     timeClasses: ["rapid", "blitz"], // change later to []
     colors: [],
     modes: [],
@@ -27,6 +28,7 @@ const Form = (props) => {
     opponentRatingTo: "",
   });
 
+  // callback for Username
   const onUsernameInputChangeCallback = (username) => {
     setValues((values) => ({
       ...values,
@@ -34,6 +36,7 @@ const Form = (props) => {
     }));
   };
 
+  // callbacks for DateRange
   const onDateRangeFromInputChangeCallback = (dateRangeFrom) => {
     setValues((values) => ({
       ...values,
@@ -48,10 +51,11 @@ const Form = (props) => {
     }));
   };
 
+  // callback for Submit
   const onSubmitCallback = async () => {
     console.log('submitted');
     await props.storeFormValues(values);
-    await props.fetchGames(values);
+    await props.fetchGames();
     await props.filterGames();
   };
 

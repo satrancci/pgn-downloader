@@ -1,16 +1,22 @@
-import axios from 'axios';
-import { Promise } from 'bluebird';
-import chesscom from '../apis/chesscom';
+import { _checkUserExists, _fetchGamesArchive, _fetchGames, _filterArchives } from '../utils/utils';
 
 
-export const fetchGames = (values) => async (dispatch, getState) => {
+export const fetchGames = () => async (dispatch, getState) => {
     //console.log('values:', values);
 
-    const userExists = await checkUserExists(values.username);
+    const values = getState().formValues;
+    console.log('fetchGames() retrieved formValues from getState():', values);
+
+    const preFilteringRequired = (values.dateRangeFrom !== '' || values.dateRangeTo !== '') ? true : false;
+    console.log('preFilteringRequired:', preFilteringRequired);
+
+    const userExists = await _checkUserExists(values.username);
     //console.log('userExists:', userExists);
     
-    const archives = await fetchGamesArchive(values.username);
-    //console.log('archives:', archives);
+    const archives = (preFilteringRequired) ? (_fetchGamesArchive(values.username)
+        .then((archives) => _filterArchives(archives, values.dateRangeFrom, values.dateRangeTo)) ) : (_fetchGamesArchive(values.username));
+    console.log('archives:', archives);
+
     
     const games = await _fetchGames(values, archives);
     //console.log('games:', games);
@@ -39,7 +45,7 @@ export const storeGames = (games) => {
 
 export const filterGames = () => (dispatch, getState) => {
     const values = getState().formValues;
-    console.log('formValues:', values);
+    console.log('filterGames() retrieved formValues from getState():', values);
     dispatch({
         type: 'FILTER_GAMES',
         payload: {
@@ -49,29 +55,3 @@ export const filterGames = () => (dispatch, getState) => {
 };
 
 
-export const checkUserExists = async (username) => {
-    try {
-      const playerExistsResponse = await chesscom.get(`/${username}`);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
-
-export const fetchGamesArchive = async (username) => {
-    const response = await chesscom.get(`/${username}/games/archives`);
-    return response.data.archives;
-};
-
-export const _fetchGames = async(values, archives) => {
-    const responses = await Promise.map(archives, url => axios.get(url), {concurrency: 1} ); // Chess.com API allows three concurrent requests per each IP address
-    const monthly_games = responses.map((res) => res.data.games);
-    const concatGames = Object.values(
-      monthly_games
-      .map((month) =>
-           month.filter((game) => game)
-          )
-      .flat()
-    );
-    return concatGames;
-  };
