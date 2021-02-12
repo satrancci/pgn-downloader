@@ -19,6 +19,18 @@ const gamesReducer = (games=[], action) => {
             default:
               return [];
           }
+        
+          case 'FILTER_BY_MODE':
+            switch (action.payload.modes.length) {
+              case 2:
+                return games;
+              case 1:
+                const isRated = (action.payload.modes[0] === 'rated') ? true : false;
+                return games.filter(game => game.rated === isRated);
+              default:
+                return [];
+            }
+            
         default:
           return games;
     }

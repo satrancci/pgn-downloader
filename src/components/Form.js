@@ -10,13 +10,14 @@ import Mode from "./form/Mode";
 import Result from "./form/Result";
 import OpponentRatingRange from "./form/OpponentRatingRange";
 import SubmitButton from "./form/SubmitButton";
+import DownloadButton from "./DownloadButton";
 
 const CUR_DATE =
   new Date().getUTCFullYear() + "/" + "0" + (new Date().getUTCMonth() + 1);
 
 const Form = (props) => {
-  const [username, setUsername] = useState("thegadfly1897");
-  const [dateRangeFrom, setDateRangeFrom] = useState("2021/01");
+  const [username, setUsername] = useState("");
+  const [dateRangeFrom, setDateRangeFrom] = useState("2020/01");
   const [dateRangeTo, setDateRangeTo] = useState(`${CUR_DATE}`);
   const [timeClasses, setTimeClasses] = useState([]);
   const [colors, setColors] = useState([]);
@@ -61,6 +62,19 @@ const Form = (props) => {
     }
   };
 
+
+  // callback for Mode
+  const onModeInputChangeCallback = (mode, checked) => {
+    if (checked) {
+      setModes((modes) => [...modes, mode]);
+    } else {
+      setModes((modes) =>
+        modes.filter((m) => m !== mode)
+      );
+    }
+  };
+  
+
   // callback for Submit
   const onSubmitCallback = async () => {
     const values = {};
@@ -74,16 +88,16 @@ const Form = (props) => {
       { modes },
       { results },
       { opponentRatingFrom },
-      { opponentRatingTo }
+      { opponentRatingTo },
     );
-    await props.storeFormValues(values);
+    props.storeFormValues(values);
     await props.fetchGames();
-    await props.filterGames();
+    props.filterGames();
   };
+
 
   /*
         //add later to return()
-        <Mode />
         <Result />
         <OpponentRatingRange />
 
@@ -108,13 +122,18 @@ const Form = (props) => {
         />
         <Color colors={colors} onColorInputChangeCallback={onColorInputChangeCallback}/>
 
+        <Mode modes={modes} onModeInputChangeCallback={onModeInputChangeCallback}/>
+
         <SubmitButton onSubmitCallback={onSubmitCallback} />
       </div>
+
+        <DownloadButton/>
+
       <div>
-        <p>values from the store: {JSON.stringify(props.formValues)}</p>
+        <p>{true ? null : JSON.stringify(props.formValues) }</p>
       </div>
       <div>
-        <p>games length from the store: {props.games.length} </p>
+        <p>{true ? null : props.games.length }</p>
       </div>
     </div>
   );
