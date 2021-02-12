@@ -1,120 +1,153 @@
 import React, { useState, useEffect } from "react";
-import { checkUserExists } from "../utils/utils";
+import { connect } from "react-redux";
+import { fetchGames, storeFormValues, filterGames } from "../actions";
 
-const TIME_CONTROLS = ["rapid", "blitz"];
+import Username from "./form/Username";
+import DateRange from "./form/DateRange";
+import TimeClass from "./form/TimeClass";
+import Color from "./form/Color";
+import Mode from "./form/Mode";
+import Result from "./form/Result";
+import OpponentRatingRange from "./form/OpponentRatingRange";
+import SubmitButton from "./form/SubmitButton";
+import DownloadButton from "./DownloadButton";
+
+const CUR_DATE =
+  new Date().getUTCFullYear() + "/" + "0" + (new Date().getUTCMonth() + 1);
 
 const Form = (props) => {
-  const [values, setValues] = useState({
-    username: "",
-    timeControl: "",
-  });
-  const [submitted, setSubmitted] = useState(false);
-  const [valid, setValid] = useState(false);
-  const [userExists, setUserExists] = useState(undefined);
+  const [username, setUsername] = useState("");
+  const [dateRangeFrom, setDateRangeFrom] = useState("2020/01");
+  const [dateRangeTo, setDateRangeTo] = useState(`${CUR_DATE}`);
+  const [timeClasses, setTimeClasses] = useState([]);
+  const [colors, setColors] = useState([]);
+  const [modes, setModes] = useState([]);
+  const [results, setResults] = useState([]);
+  const [opponentRatingFrom, setOpponentRatingFrom] = useState("");
+  const [opponentRatingTo, setOpponentRatingTo] = useState("");
 
-  const onUsernameInputChange = (e) => {
-    setValues((values) => ({
-      ...values,
-      username: e.target.value,
-    }));
+  // callback for Username
+  const onUsernameInputChangeCallback = (username) => {
+    setUsername(username.toLowerCase());
   };
 
-  const onTimeControlInputChange = (e) => {
-    setValues((values) => ({
-      ...values,
-      timeControl: e.target.value,
-    }));
+  // callbacks for DateRange
+  const onDateRangeFromInputChangeCallback = (dateRangeFrom) => {
+    setDateRangeFrom(dateRangeFrom);
   };
 
-  const onFormSubmit = async (e) => {
-    e.preventDefault();
-    if (
-      values.username &&
-      values.timeControl &&
-      TIME_CONTROLS.includes(values.timeControl)
-    ) {
-      const userExists = await checkUserExists(values.username);
-      if (userExists) {
-        setUserExists(true);
-        setValid(true);
-        props.onSubmit(values);
-      } else {
-        setUserExists(false);
-      }
+  const onDateRangeToInputChangeCallback = (dateRangeTo) => {
+    setDateRangeTo(dateRangeTo);
+  };
+
+  // callback for TimeClass
+  const onTimeClassInputChangeCallback = (timeClass, checked) => {
+    if (checked) {
+      setTimeClasses((timeClasses) => [...timeClasses, timeClass]);
+    } else {
+      setTimeClasses((timeClasses) =>
+        timeClasses.filter((t) => t !== timeClass)
+      );
     }
-    setSubmitted(true);
+  };
+
+  // callback for Color
+  const onColorInputChangeCallback = (color, checked) => {
+    if (checked) {
+      setColors((colors) => [...colors, color]);
+    } else {
+      setColors((colors) =>
+        colors.filter((c) => c !== color)
+      );
+    }
   };
 
 
-  useEffect(() => {
-    const cleanUpForm = async () => {
-      await new Promise((r) => setTimeout(r, 5000)); // make the transition more user-friendly
-      setUserExists(undefined);
-      setSubmitted(false);
-      setValid(false);
-    };
-    cleanUpForm();
-  }, [props.onSubmit]);
+  // callback for Mode
+  const onModeInputChangeCallback = (mode, checked) => {
+    if (checked) {
+      setModes((modes) => [...modes, mode]);
+    } else {
+      setModes((modes) =>
+        modes.filter((m) => m !== mode)
+      );
+    }
+  };
+  
+
+  // callback for Submit
+  const onSubmitCallback = async () => {
+    const values = {};
+    Object.assign(
+      values,
+      { username },
+      { dateRangeFrom },
+      { dateRangeTo },
+      { timeClasses },
+      { colors },
+      { modes },
+      { results },
+      { opponentRatingFrom },
+      { opponentRatingTo },
+    );
+    props.storeFormValues(values);
+    await props.fetchGames();
+    props.filterGames();
+  };
+
+
+  /*
+        //add later to return()
+        <Result />
+        <OpponentRatingRange />
+
+  */
 
   return (
     <div className="ui segment">
       <div className="ui form">
-        <form onSubmit={onFormSubmit}>
-          <div className="field">
-            <label>Username</label>
-            <input
-              id="username"
-              type="text"
-              placeholder="username"
-              name="username"
-              value={values.username}
-              onChange={onUsernameInputChange}
-            />
-            {submitted && !values.username && (
-              <span id="username-error" style={{ color: "red" }}>
-                Please enter your username
-              </span>
-            )}
-            {submitted && values.username && userExists === false && (
-              <span id="username-error" style={{ color: "red" }}>
-                This user is not registered on Chess.com!
-              </span>
-            )}
-          </div>
-          <div className="field">
-            <label>Time Control</label>
-            <input
-              id="time-control"
-              type="text"
-              placeholder="e.g. blitz"
-              name="time-control"
-              value={values.timeControl}
-              onChange={onTimeControlInputChange}
-            />
-            {submitted &&
-              (!values.timeControl ||
-                !TIME_CONTROLS.includes(values.timeControl)) && (
-                <span id="time-control-error" style={{ color: "red" }}>
-                  Please enter the time control for the games that you want to
-                  fetch: {TIME_CONTROLS.map((tc) => `${tc} `)}
-                </span>
-              )}
-          </div>
-          <button className="ui blue submit button" type="submit">
-            Submit
-          </button>
-        </form>
+        <Username
+          username={username}
+          onInputChangeCallback={onUsernameInputChangeCallback}
+        />
+        <DateRange
+          dateRangeFrom={dateRangeFrom}
+          onFromInputChangeCallback={onDateRangeFromInputChangeCallback}
+          dateRangeTo={dateRangeTo}
+          onToInputChangeCallback={onDateRangeToInputChangeCallback}
+        />
+        <TimeClass
+          timeClasses={timeClasses}
+          onTimeClassInputChangeCallback={onTimeClassInputChangeCallback}
+        />
+        <Color colors={colors} onColorInputChangeCallback={onColorInputChangeCallback}/>
+
+        <Mode modes={modes} onModeInputChangeCallback={onModeInputChangeCallback}/>
+
+        <SubmitButton onSubmitCallback={onSubmitCallback} />
       </div>
-      {valid && submitted && (
-        <div
-          className="success-message"
-          style={{ marginTop: "10px", color: "green" }}
-        >
-          Submitted!
-        </div>
-      )}
+
+        <DownloadButton/>
+
+      <div>
+        <p>{true ? null : JSON.stringify(props.formValues) }</p>
+      </div>
+      <div>
+        <p>{true ? null : props.games.length }</p>
+      </div>
     </div>
   );
 };
 
-export default Form;
+const mapStateToProps = (state) => {
+  return {
+    formValues: state.formValues,
+    games: state.games,
+  };
+};
+
+export default connect(mapStateToProps, {
+  storeFormValues,
+  fetchGames,
+  filterGames,
+})(Form);
