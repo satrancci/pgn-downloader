@@ -15,45 +15,56 @@ const CUR_DATE = (new Date().getUTCFullYear())+'/'+'0'+(new Date().getUTCMonth()
 
 const Form = (props) => {
 
-
-  const [values, setValues] = useState({
-    username: "",
-    dateRangeFrom: "2000/01",
-    dateRangeTo: `${CUR_DATE}`,
-    timeClasses: ["rapid", "blitz"], // change later to []
-    colors: [],
-    modes: [],
-    results: [],
-    opponentRatingFrom: "",
-    opponentRatingTo: "",
-  });
+  const [username, setUsername] = useState("");
+  const [dateRangeFrom, setDateRangeFrom] = useState("2000/01");
+  const [dateRangeTo, setDateRangeTo] = useState(`${CUR_DATE}`);
+  const [timeClasses, setTimeClasses] = useState([]);
+  const [colors, setColors] = useState([]);
+  const [modes, setModes] = useState([]);
+  const [results, setResults] = useState([]);
+  const [opponentRatingFrom, setOpponentRatingFrom] = useState("");
+  const [opponentRatingTo, setOpponentRatingTo] = useState("");
 
   // callback for Username
   const onUsernameInputChangeCallback = (username) => {
-    setValues((values) => ({
-      ...values,
-      username: username,
-    }));
+    setUsername(username);
   };
 
   // callbacks for DateRange
   const onDateRangeFromInputChangeCallback = (dateRangeFrom) => {
-    setValues((values) => ({
-      ...values,
-      dateRangeFrom: dateRangeFrom,
-    }));
+    setDateRangeFrom(dateRangeFrom);
   };
 
   const onDateRangeToInputChangeCallback = (dateRangeTo) => {
-    setValues((values) => ({
-      ...values,
-      dateRangeTo: dateRangeTo,
-    }));
+    setDateRangeTo(dateRangeTo);
   };
+
+  // callback for TimeClass
+  const onTimeClassInputChangeCallback = (timeClass, checked) => {
+    if (checked) {
+      setTimeClasses(timeClasses => [...timeClasses, timeClass]);
+    } else {
+      setTimeClasses(timeClasses => timeClasses.filter(t => t !== timeClass));
+    }
+  };
+
+  useEffect(() => {
+  }, [timeClasses])
 
   // callback for Submit
   const onSubmitCallback = async () => {
-    console.log('submitted');
+    const values = {};
+    Object.assign(values,
+      {username},
+      {dateRangeFrom},
+      {dateRangeTo},
+      {timeClasses},
+      {colors},
+      {modes},
+      {results},
+      {opponentRatingFrom},
+      {opponentRatingTo}
+      );
     await props.storeFormValues(values);
     await props.fetchGames();
     await props.filterGames();
@@ -61,7 +72,6 @@ const Form = (props) => {
 
   /*
         //add later to return()
-        <TimeClass />
         <Color />
         <Mode />
         <Result />
@@ -74,15 +84,16 @@ const Form = (props) => {
     <div className="ui segment">
       <div className="ui form">
         <Username
-          username={values.username}
+          username={username}
           onInputChangeCallback={onUsernameInputChangeCallback}
         />
         <DateRange
-          dateRangeFrom={values.dateRangeFrom}
+          dateRangeFrom={dateRangeFrom}
           onFromInputChangeCallback={onDateRangeFromInputChangeCallback}
-          dateRangeTo={values.dateRangeTo}
+          dateRangeTo={dateRangeTo}
           onToInputChangeCallback={onDateRangeToInputChangeCallback}
         />
+         <TimeClass timeClasses={timeClasses} onTimeClassInputChangeCallback={onTimeClassInputChangeCallback}/>
 
         <SubmitButton onSubmitCallback={onSubmitCallback}/>
       </div>
