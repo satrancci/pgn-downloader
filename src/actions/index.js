@@ -43,15 +43,29 @@ export const storeGames = (games) => {
     };
 };
 
+export const filterByColor = (username,colors) => {
+    return {
+        type: 'FILTER_BY_COLOR',
+        payload: {
+            username: username,
+            colors: colors
+        }
+    };
+};
+
+export const filterByTimeClass = (timeClasses) => {
+    return {
+        type: 'FILTER_BY_TIMECLASS',
+        payload: {
+            timeClasses: timeClasses
+        }
+    };
+};
+
 export const filterGames = () => (dispatch, getState) => {
     const values = getState().formValues;
-    console.log('filterGames() retrieved formValues from getState():', values);
-    dispatch({
-        type: 'FILTER_GAMES',
-        payload: {
-            values: values
-        }
-    });
+    dispatch(filterByTimeClass(values.timeClasses));
+    dispatch(filterByColor(values.username, values.colors));
 };
 
 
