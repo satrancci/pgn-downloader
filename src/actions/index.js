@@ -71,11 +71,21 @@ export const filterByMode = (modes) => {
     };
 };
 
+export const filterByResult = (username, results) => {
+    return {
+        type: 'FILTER_BY_RESULT',
+        payload: {
+            username: username,
+            results: results
+        }
+    };
+};
 export const filterGames = () => (dispatch, getState) => {
     const values = getState().formValues;
     dispatch(filterByTimeClass(values.timeClasses));
     dispatch(filterByColor(values.username, values.colors));
     dispatch(filterByMode(values.modes));
+    dispatch(filterByResult(values.username, values.results));
     //console.log('games after filtering:', getState().games);
 };
 

@@ -73,6 +73,17 @@ const Form = (props) => {
       );
     }
   };
+
+  // callback for Result
+  const onResultInputChangeCallback = (result, checked) => {
+    if (checked) {
+      setResults((results) => [...results, result]);
+    } else {
+      setResults((results) =>
+        results.filter((r) => r !== result)
+      );
+    }
+  };
   
 
   // callback for Submit
@@ -98,7 +109,6 @@ const Form = (props) => {
 
   /*
         //add later to return()
-        <Result />
         <OpponentRatingRange />
 
   */
@@ -123,6 +133,8 @@ const Form = (props) => {
         <Color colors={colors} onColorInputChangeCallback={onColorInputChangeCallback}/>
 
         <Mode modes={modes} onModeInputChangeCallback={onModeInputChangeCallback}/>
+
+        <Result  results={results} onResultInputChangeCallback={onResultInputChangeCallback} />
 
         <SubmitButton onSubmitCallback={onSubmitCallback} />
       </div>

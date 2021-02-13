@@ -14,7 +14,7 @@ const gamesReducer = (games=[], action) => {
             case 1:
               const color = action.payload.colors[0];
               const players = games.map(game => game[`${color}`].username.toLowerCase());
-              const filteredGames = games.filter((player, i) => players.map(player => player === action.payload.username)[i]);
+              const filteredGames = games.filter((_, i) => players.map(player => player === action.payload.username)[i]);
               return filteredGames;
             default:
               return [];
@@ -30,6 +30,29 @@ const gamesReducer = (games=[], action) => {
               default:
                 return [];
             }
+
+          case 'FILTER_BY_RESULT':
+            const {username, results} = action.payload;
+            
+            if (results.length === 0) { return []; };
+            if (results.length === 3) { return games; };
+
+            const gamesWon = (results.includes("win")) ? games.filter
+            (game => (game.white.username.toLowerCase() === username && game.white.result === "win")
+            || (game.black.username.toLowerCase() === username && game.black.result === "win"))
+            : [];
+
+            const gamesLost = (results.includes("loss")) ? games.filter
+            (game => (game.white.username.toLowerCase() !== username && game.white.result === "win")
+            || (game.black.username.toLowerCase() !== username && game.black.result === "win"))
+            : [];
+
+            const gamesDraw = (results.includes("draw")) ? games.filter
+            (game => game.white.result !== "win" && game.black.result !== "win")
+            : [];
+
+            return gamesWon.concat(gamesLost, gamesDraw);
+
             
         default:
           return games;
