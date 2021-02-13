@@ -23,8 +23,8 @@ const Form = (props) => {
   const [colors, setColors] = useState([]);
   const [modes, setModes] = useState([]);
   const [results, setResults] = useState([]);
-  const [opponentRatingFrom, setOpponentRatingFrom] = useState("");
-  const [opponentRatingTo, setOpponentRatingTo] = useState("");
+  const [opponentRatingFrom, setOpponentRatingFrom] = useState("0");
+  const [opponentRatingTo, setOpponentRatingTo] = useState("4000");
 
   // callback for Username
   const onUsernameInputChangeCallback = (username) => {
@@ -56,21 +56,16 @@ const Form = (props) => {
     if (checked) {
       setColors((colors) => [...colors, color]);
     } else {
-      setColors((colors) =>
-        colors.filter((c) => c !== color)
-      );
+      setColors((colors) => colors.filter((c) => c !== color));
     }
   };
-
 
   // callback for Mode
   const onModeInputChangeCallback = (mode, checked) => {
     if (checked) {
       setModes((modes) => [...modes, mode]);
     } else {
-      setModes((modes) =>
-        modes.filter((m) => m !== mode)
-      );
+      setModes((modes) => modes.filter((m) => m !== mode));
     }
   };
 
@@ -79,12 +74,18 @@ const Form = (props) => {
     if (checked) {
       setResults((results) => [...results, result]);
     } else {
-      setResults((results) =>
-        results.filter((r) => r !== result)
-      );
+      setResults((results) => results.filter((r) => r !== result));
     }
   };
-  
+
+  // callbacks for Opponent Rating
+  const onRatingFromInputChangeCallback = (opponentRatingFrom) => {
+    setOpponentRatingFrom(opponentRatingFrom);
+  };
+
+  const onRatingToInputChangeCallback = (opponentRatingTo) => {
+    setOpponentRatingTo(opponentRatingTo);
+  };
 
   // callback for Submit
   const onSubmitCallback = async () => {
@@ -99,19 +100,13 @@ const Form = (props) => {
       { modes },
       { results },
       { opponentRatingFrom },
-      { opponentRatingTo },
+      { opponentRatingTo }
     );
     props.storeFormValues(values);
     await props.fetchGames();
     props.filterGames();
   };
 
-
-  /*
-        //add later to return()
-        <OpponentRatingRange />
-
-  */
 
   return (
     <div className="ui segment">
@@ -130,22 +125,38 @@ const Form = (props) => {
           timeClasses={timeClasses}
           onTimeClassInputChangeCallback={onTimeClassInputChangeCallback}
         />
-        <Color colors={colors} onColorInputChangeCallback={onColorInputChangeCallback}/>
+        <Color
+          colors={colors}
+          onColorInputChangeCallback={onColorInputChangeCallback}
+        />
 
-        <Mode modes={modes} onModeInputChangeCallback={onModeInputChangeCallback}/>
+        <Mode
+          modes={modes}
+          onModeInputChangeCallback={onModeInputChangeCallback}
+        />
 
-        <Result  results={results} onResultInputChangeCallback={onResultInputChangeCallback} />
+        <Result
+          results={results}
+          onResultInputChangeCallback={onResultInputChangeCallback}
+        />
+
+        <OpponentRatingRange
+          opponentRatingFrom={opponentRatingFrom}
+          onRatingFromInputChangeCallback={onRatingFromInputChangeCallback}
+          opponentRatingTo={opponentRatingTo}
+          onRatingToInputChangeCallback={onRatingToInputChangeCallback}
+        />
 
         <SubmitButton onSubmitCallback={onSubmitCallback} />
       </div>
 
-        <DownloadButton/>
+      <DownloadButton />
 
       <div>
-        <p>{true ? null : JSON.stringify(props.formValues) }</p>
+        <p>{true ? null : JSON.stringify(props.formValues)}</p>
       </div>
       <div>
-        <p>{true ? null : props.games.length }</p>
+        <p>{true ? null : props.games.length}</p>
       </div>
     </div>
   );

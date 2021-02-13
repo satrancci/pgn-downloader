@@ -80,12 +80,25 @@ export const filterByResult = (username, results) => {
         }
     };
 };
+
+export const filterByOpponentRating = (username, opponentRatingFrom, opponentRatingTo) => {
+    return {
+        type: 'FILTER_BY_OPPONENT_RATING',
+        payload: {
+            username: username,
+            opponentRatingFrom: opponentRatingFrom,
+            opponentRatingTo: opponentRatingTo
+        }
+    };
+};
+
 export const filterGames = () => (dispatch, getState) => {
     const values = getState().formValues;
     dispatch(filterByTimeClass(values.timeClasses));
     dispatch(filterByColor(values.username, values.colors));
     dispatch(filterByMode(values.modes));
     dispatch(filterByResult(values.username, values.results));
+    dispatch(filterByOpponentRating(values.username, values.opponentRatingFrom, values.opponentRatingTo));
     //console.log('games after filtering:', getState().games);
 };
 

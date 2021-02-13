@@ -1,4 +1,7 @@
 const gamesReducer = (games=[], action) => {
+  const MIN_RATING = 0;
+  const MAX_RATING = 10000; // just in case!
+
     switch (action.type) {
 
         case 'STORE_GAMES':
@@ -53,6 +56,16 @@ const gamesReducer = (games=[], action) => {
 
             return gamesWon.concat(gamesLost, gamesDraw);
 
+          case 'FILTER_BY_OPPONENT_RATING':
+            let {opponentRatingFrom, opponentRatingTo} = action.payload;
+
+            opponentRatingFrom = (opponentRatingFrom !== "") ? parseInt(opponentRatingFrom) : MIN_RATING;
+            opponentRatingTo = (opponentRatingTo !== "") ? parseInt(opponentRatingTo) : MAX_RATING;
+
+            return games.filter(game => 
+              (game.white.username.toLowerCase() === action.payload.username && game.black.rating >= opponentRatingFrom && game.black.rating <= opponentRatingTo)
+              || (game.black.username.toLowerCase() === action.payload.username && game.white.rating >= opponentRatingFrom && game.white.rating <= opponentRatingTo)
+              );
             
         default:
           return games;
