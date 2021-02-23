@@ -10,7 +10,7 @@ export const fetchGames = () => async (dispatch, getState) => {
     const preFilteringRequired = (values.dateRangeFrom !== '' || values.dateRangeTo !== '') ? true : false;
     //console.log('preFilteringRequired:', preFilteringRequired);
 
-    const userExists = await _checkUserExists(values.username);
+    //const userExists = await _checkUserExists(values.username);
     //console.log('userExists:', userExists);
     
     const archives = (preFilteringRequired) ? (_fetchGamesArchive(values.username)
