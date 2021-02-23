@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { fetchGames, storeFormValues, filterGames } from "../actions";
+import { validateUsername, validateDateRange, validateRatingRange } from "./formValidators";
 
 import Username from "./form/Username";
 import DateRange from "./form/DateRange";
@@ -26,86 +27,101 @@ const Form = (props) => {
   const [opponentRatingFrom, setOpponentRatingFrom] = useState("0");
   const [opponentRatingTo, setOpponentRatingTo] = useState("4000");
 
+  const [usernameError, setUsernameError] = useState(null);
+  const [dateRangeError, setDateRangeError] = useState(null);
+  const [opponentRatingError, setOpponentRatingError] = useState(null);
+
+  const [formValid, setFormValid] = useState(null);
+
   // callback for Username
-  const onUsernameInputChangeCallback = (username) => {
-    setUsername(username.toLowerCase());
-  };
+  const onUsernameInputChangeCallback = username => setUsername(username.toLowerCase());
 
   // callbacks for DateRange
-  const onDateRangeFromInputChangeCallback = (dateRangeFrom) => {
-    setDateRangeFrom(dateRangeFrom);
-  };
-
-  const onDateRangeToInputChangeCallback = (dateRangeTo) => {
-    setDateRangeTo(dateRangeTo);
-  };
+  const onDateRangeFromInputChangeCallback = dateRangeFrom => setDateRangeFrom(dateRangeFrom);
+  const onDateRangeToInputChangeCallback = dateRangeTo => setDateRangeTo(dateRangeTo);
 
   // callback for TimeClass
   const onTimeClassInputChangeCallback = (timeClass, checked) => {
-    if (checked) {
-      setTimeClasses((timeClasses) => [...timeClasses, timeClass]);
-    } else {
-      setTimeClasses((timeClasses) =>
-        timeClasses.filter((t) => t !== timeClass)
-      );
-    }
+    (checked) ? 
+    setTimeClasses((timeClasses) => [...timeClasses, timeClass]) 
+    : 
+    setTimeClasses((timeClasses) => timeClasses.filter((t) => t !== timeClass));
   };
 
   // callback for Color
   const onColorInputChangeCallback = (color, checked) => {
-    if (checked) {
-      setColors((colors) => [...colors, color]);
-    } else {
-      setColors((colors) => colors.filter((c) => c !== color));
-    }
+    (checked) ?
+    setColors((colors) => [...colors, color])
+    :
+     setColors((colors) => colors.filter((c) => c !== color))
   };
 
   // callback for Mode
   const onModeInputChangeCallback = (mode, checked) => {
-    if (checked) {
-      setModes((modes) => [...modes, mode]);
-    } else {
-      setModes((modes) => modes.filter((m) => m !== mode));
-    }
+    (checked) ?
+    setModes((modes) => [...modes, mode])
+    :
+    setModes((modes) => modes.filter((m) => m !== mode))
   };
 
   // callback for Result
   const onResultInputChangeCallback = (result, checked) => {
-    if (checked) {
-      setResults((results) => [...results, result]);
-    } else {
-      setResults((results) => results.filter((r) => r !== result));
-    }
+    (checked) ? 
+    setResults((results) => [...results, result])
+    :
+    setResults((results) => results.filter((r) => r !== result))
   };
 
   // callbacks for Opponent Rating
-  const onRatingFromInputChangeCallback = (opponentRatingFrom) => {
-    setOpponentRatingFrom(opponentRatingFrom);
-  };
-
-  const onRatingToInputChangeCallback = (opponentRatingTo) => {
-    setOpponentRatingTo(opponentRatingTo);
-  };
+  const onRatingFromInputChangeCallback = opponentRatingFrom => setOpponentRatingFrom(opponentRatingFrom);
+  const onRatingToInputChangeCallback = opponentRatingTo => setOpponentRatingTo(opponentRatingTo);
 
   // callback for Submit
   const onSubmitCallback = async () => {
-    const values = {};
-    Object.assign(
-      values,
-      { username },
-      { dateRangeFrom },
-      { dateRangeTo },
-      { timeClasses },
-      { colors },
-      { modes },
-      { results },
-      { opponentRatingFrom },
-      { opponentRatingTo }
-    );
-    props.storeFormValues(values);
-    await props.fetchGames();
-    props.filterGames();
+    const [userValidated, userValidatedErrorMessage] = await validateUsername(username);
+    //console.log('userValidated:', userValidated);
+    (!userValidated) ? setUsernameError(userValidatedErrorMessage) : setUsernameError(null);
+
+    const [dateValidated, dateValidatedErrorMessage] = validateDateRange(dateRangeFrom, dateRangeTo);
+    //console.log('dateValidated:', dateValidated);
+    (!dateValidated) ? setDateRangeError(dateValidatedErrorMessage) : setDateRangeError(null);
+
+    const [ratingValidated, ratingValidatedErrorMessage] = validateRatingRange(opponentRatingFrom, opponentRatingTo);
+    //console.log('ratingValidated:', ratingValidated);
+    (!ratingValidated) ? setOpponentRatingError(ratingValidatedErrorMessage) : setOpponentRatingError(null);
+ 
+    (userValidated && dateValidated && ratingValidated) ? setFormValid(true) : setFormValid(false);
   };
+
+  useEffect(() => {
+    setFormValid(null);
+  }, [onSubmitCallback])
+
+  useEffect(() => {
+    //console.log('formValid:', formValid);
+
+    const onSubmitValidated = async (values) => {
+      props.storeFormValues(values);
+      await props.fetchGames();
+      props.filterGames();
+    }
+    if (formValid === true) {
+      const values = {};
+      Object.assign(
+        values,
+        { username },
+        { dateRangeFrom },
+        { dateRangeTo },
+        { timeClasses },
+        { colors },
+        { modes },
+        { results },
+        { opponentRatingFrom },
+        { opponentRatingTo }
+      );
+      onSubmitValidated(values);
+    }
+  }, [formValid])
 
 
   return (
@@ -113,10 +129,12 @@ const Form = (props) => {
       <div className="ui form">
         <Username
           username={username}
+          error={usernameError}
           onInputChangeCallback={onUsernameInputChangeCallback}
         />
         <DateRange
           dateRangeFrom={dateRangeFrom}
+          error={dateRangeError}
           onFromInputChangeCallback={onDateRangeFromInputChangeCallback}
           dateRangeTo={dateRangeTo}
           onToInputChangeCallback={onDateRangeToInputChangeCallback}
@@ -142,6 +160,7 @@ const Form = (props) => {
 
         <OpponentRatingRange
           opponentRatingFrom={opponentRatingFrom}
+          error={opponentRatingError}
           onRatingFromInputChangeCallback={onRatingFromInputChangeCallback}
           opponentRatingTo={opponentRatingTo}
           onRatingToInputChangeCallback={onRatingToInputChangeCallback}
@@ -153,10 +172,10 @@ const Form = (props) => {
       <DownloadButton />
 
       <div>
-        <p>{true ? null : JSON.stringify(props.formValues)}</p>
+        <p>{false ? null : JSON.stringify(props.formValues) /* for debugging */}</p>
       </div>
       <div>
-        <p>{true ? null : props.games.length}</p>
+        <p>{true ? null : props.games.length /* for debugging */}</p>
       </div>
     </div>
   );
