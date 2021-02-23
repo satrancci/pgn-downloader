@@ -12,6 +12,11 @@ const Username = (props) => {
         placeholder="username" 
         value={props.username} 
         onChange={e => props.onInputChangeCallback(e.target.value)}/>
+        {props.error &&
+        <span id="username-error" style={{ color: "red" }}>
+          {props.error}
+        </span>
+        }
     </div>
   );
 };

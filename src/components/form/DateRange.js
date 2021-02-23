@@ -12,20 +12,25 @@ const DateRange = (props) => {
           type="text"
           placeholder="YYYY/MM"
           value={props.dateRangeFrom}
-          onChange={e => props.onFromInputChangeCallback(e.target.value)}
+          onChange={(e) => props.onFromInputChangeCallback(e.target.value)}
         />
+        {props.error && (
+          <span id="username-error" style={{ color: "red" }}>
+            {props.error}
+          </span>
+        )}
       </div>
       <div className="field">
         <label>
           <i className="calendar alternate outline icon"></i>
           Date To {props.dateRangeTo}
         </label>
-        <input 
+        <input
           id="date-range-to"
-          type="text" 
-          placeholder="YYYY/MM" 
+          type="text"
+          placeholder="YYYY/MM"
           value={props.dateRangeTo}
-          onChange={e => props.onToInputChangeCallback(e.target.value)}
+          onChange={(e) => props.onToInputChangeCallback(e.target.value)}
         />
       </div>
     </div>
