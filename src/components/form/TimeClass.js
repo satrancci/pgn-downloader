@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 
 const TimeClass = (props) => {
-  const [bulletChecked, setBulletChecked] = useState(false);
-  const [blitzChecked, setBlitzChecked] = useState(false);
-  const [rapidChecked, setRapidChecked] = useState(false);
-  const [dailyChecked, setDailyChecked] = useState(false);
+  const [bulletChecked, setBulletChecked] = useState(true);
+  const [blitzChecked, setBlitzChecked] = useState(true);
+  const [rapidChecked, setRapidChecked] = useState(true);
+  const [dailyChecked, setDailyChecked] = useState(true);
 
   const onBulletCheck = () => {
     setBulletChecked((checked) => !checked);
@@ -43,13 +43,16 @@ const TimeClass = (props) => {
       <label>
         <i className="clock icon"></i>
         Time Control
-        {props.timeClasses !== undefined ? props.timeClasses.map((t) => ` ${t}  `) : null}
+        {props.timeClasses !== undefined
+          ? props.timeClasses.map((t) => ` ${t}  `)
+          : null}
       </label>
       <div className="field">
         <div className="ui checkbox">
           <input
             id="bullet-checkbox"
             type="checkbox"
+            defaultChecked={bulletChecked}
             onChange={onBulletCheck}
           />
           <label>Bullet</label>
@@ -57,19 +60,34 @@ const TimeClass = (props) => {
       </div>
       <div className="field">
         <div className="ui checkbox">
-          <input id="blitz-checkbox" type="checkbox" onChange={onBlitzCheck} />
+          <input
+            id="blitz-checkbox"
+            type="checkbox"
+            defaultChecked={blitzChecked}
+            onChange={onBlitzCheck}
+          />
           <label>Blitz</label>
         </div>
       </div>
       <div className="field">
         <div className="ui checkbox">
-          <input id="rapid-checkbox" type="checkbox" onChange={onRapidCheck} />
+          <input
+            id="rapid-checkbox"
+            type="checkbox"
+            defaultChecked={rapidChecked}
+            onChange={onRapidCheck}
+          />
           <label>Rapid</label>
         </div>
       </div>
       <div className="field">
         <div className="ui checkbox">
-          <input id="daily-checkbox" type="checkbox" onChange={onDailyCheck} />
+          <input
+            id="daily-checkbox"
+            type="checkbox"
+            defaultChecked={dailyChecked}
+            onChange={onDailyCheck}
+          />
           <label>Daily</label>
         </div>
       </div>

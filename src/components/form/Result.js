@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 
 const Result = (props) => {
 
-  const [winChecked, setWinChecked] = useState(false);
-  const [lossChecked, setLossChecked] = useState(false);
-  const [drawChecked, setDrawChecked] = useState(false);
+  const [winChecked, setWinChecked] = useState(true);
+  const [lossChecked, setLossChecked] = useState(true);
+  const [drawChecked, setDrawChecked] = useState(true);
 
   const onWinCheck = () => {
     setWinChecked((checked) => !checked);
@@ -39,19 +39,19 @@ const Result = (props) => {
       </label>
       <div className="field">
         <div className="ui checkbox">
-          <input id="win-checkbox" type="checkbox" onChange={onWinCheck} />
+          <input id="win-checkbox" type="checkbox" defaultChecked={drawChecked} onChange={onWinCheck} />
           <label>Win</label>
         </div>
       </div>
       <div className="field">
         <div className="ui checkbox">
-          <input id="loss-checkbox" type="checkbox" onChange={onLossCheck} />
+          <input id="loss-checkbox" type="checkbox" defaultChecked={winChecked} onChange={onLossCheck} />
           <label>Loss</label>
         </div>
       </div>
       <div className="field">
         <div className="ui checkbox">
-          <input id="lost-checkbox" type="checkbox" onChange={onDrawCheck} />
+          <input id="lost-checkbox" type="checkbox" defaultChecked={lossChecked} onChange={onDrawCheck} />
           <label>Draw</label>
         </div>
       </div>
