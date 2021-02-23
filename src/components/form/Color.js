@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 const Color = (props) => {
-  const [whiteChecked, setWhiteChecked] = useState(false);
-  const [blackChecked, setBlackChecked] = useState(false);
+  const [whiteChecked, setWhiteChecked] = useState(true);
+  const [blackChecked, setBlackChecked] = useState(true);
 
   const onWhiteCheck = () => {
     setWhiteChecked((checked) => !checked);
@@ -32,6 +32,7 @@ const Color = (props) => {
           <input
             id="white-color-checkbox"
             type="checkbox"
+            defaultChecked={whiteChecked}
             onChange={onWhiteCheck}
           />
           <label>White</label>
@@ -42,6 +43,7 @@ const Color = (props) => {
           <input
             id="black-color-checkbox"
             type="checkbox"
+            defaultChecked={blackChecked}
             onChange={onBlackCheck}
           />
           <label>Black</label>
