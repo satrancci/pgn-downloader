@@ -9,7 +9,7 @@ const Username = (props) => {
       <input
         id="username" 
         type="text" 
-        placeholder="username" 
+        placeholder="Chess.com username" 
         value={props.username} 
         onChange={e => props.onInputChangeCallback(e.target.value)}/>
         {props.error &&
