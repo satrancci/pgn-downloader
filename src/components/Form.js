@@ -172,14 +172,6 @@ const Form = (props) => {
 
         <SubmitButton onSubmitCallback={onSubmitCallback} />
       </div>
-
-      <div>
-        <p>formValues:{false ? null : JSON.stringify(props.state.formValues) /* for debugging */}</p>
-        <p>games.length:{false ? null : props.state.games.length /* for debugging */}</p>
-        <p>isSubmitted:{false ? null : props.state.isSubmitted /* for debugging */}</p>
-        <p>areFetched:{false ? null : props.state.areFetched /* for debugging */}</p>
-        <p>areFiltered:{false ? null : props.state.areFiltered /* for debugging */}</p>
-      </div>
     </div>
   );
 };
