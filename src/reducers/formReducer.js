@@ -4,6 +4,9 @@ const formReducer = (values={}, action) => {
           return action.payload.values;
         default:
           return values;
+        
+        case 'CLEAR_FORM_VALUES':
+          return {}
     }
 };
 
