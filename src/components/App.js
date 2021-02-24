@@ -1,13 +1,23 @@
-import React from 'react';
-import Form from './Form';
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import Form from "./Form";
+import DownloadButton from "./DownloadButton";
 
+const App = ({state}) => {
 
-const App = () => {
   return (
     <div className="ui container">
-      <Form />
+      <Form/>
+    { (state.areFetched && state.areFiltered) ? <DownloadButton/> : null} 
     </div>
   );
 };
 
-export default App;
+
+const mapStateToProps = (state) => {
+  return {
+    state: state
+  };
+};
+
+export default connect(mapStateToProps)(App);
