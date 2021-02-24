@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import Form from "./Form";
 import Loader from "./Loader";
-import DownloadButton from "./DownloadButton";
+import Download from "./Download";
 
 const App = ({state}) => {
 
   return (
     <div className="ui container">
-    { ((state.isSubmitted && !state.areFetched && !state.areFiltered)) ? <Loader/> : <Form/> }
-    { (state.areFetched && state.areFiltered) ? <DownloadButton/> : null} 
+    { (!state.isSubmitted || state.isDownloaded) ? <Form/> : null}
+    { ((state.isSubmitted && !state.areFetched && !state.areFiltered)) ? <Loader/> : null }
+    { (state.isSubmitted && state.areFetched && state.areFiltered && !state.isDownloaded) ? <Download/> : null}
     </div>
   );
 };
