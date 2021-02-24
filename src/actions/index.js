@@ -34,12 +34,24 @@ export const storeFormValues = (values) => (dispatch) => {
     });
 };
 
+export const clearFormValues = () => {
+    return {
+        type: 'CLEAR_FORM_VALUES'
+    };
+};
+
 export const storeGames = (games) => {
     return {
         type: 'STORE_GAMES',
         payload: {
             games: games
         }
+    };
+};
+
+export const clearGames = () => {
+    return {
+        type: 'CLEAR_GAMES'
     };
 };
 
@@ -91,6 +103,42 @@ export const filterByOpponentRating = (username, opponentRatingFrom, opponentRat
         }
     };
 };
+
+
+export const updateSubmitted = (bool) => {
+    return {
+        type: 'UPDATE_SUBMITTED',
+        payload: {
+            bool: bool
+        }
+    };
+};
+
+export const updateFetched = (bool) => {
+    return {
+        type: 'UPDATE_FETCHED',
+        payload: {
+            bool: bool
+        }
+    };
+};
+
+export const updateFiltered = (bool) => {
+    return {
+        type: 'UPDATE_FILTERED',
+        payload: {
+            bool: bool
+        }
+    };
+};
+
+export const updateStateToDefault = () => (dispatch) => {
+    dispatch(clearFormValues());
+    dispatch(clearGames());
+    dispatch(updateSubmitted(0));
+    dispatch(updateFetched(0));
+    dispatch(updateFiltered(0));
+}
 
 export const filterGames = () => (dispatch, getState) => {
     const values = getState().formValues;
