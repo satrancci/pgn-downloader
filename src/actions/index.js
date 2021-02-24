@@ -132,12 +132,22 @@ export const updateFiltered = (bool) => {
     };
 };
 
+export const updateDownloaded = (bool) => {
+    return {
+        type: 'UPDATE_DOWNLOADED',
+        payload: {
+            bool: bool
+        }
+    };
+};
+
 export const updateStateToDefault = () => (dispatch) => {
     dispatch(clearFormValues());
     dispatch(clearGames());
     dispatch(updateSubmitted(0));
     dispatch(updateFetched(0));
     dispatch(updateFiltered(0));
+    dispatch(updateDownloaded(0));
 }
 
 export const filterGames = () => (dispatch, getState) => {

@@ -4,11 +4,13 @@ import formReducer from './formReducer';
 import submittedReducer from './submittedReducer';
 import fetchedReducer from './fetchedReducer';
 import filteredReducer from './filteredReducer';
+import downloadedReducer from './downloadedReducer';
 
 export default combineReducers({
   games: gamesReducer,
   formValues: formReducer,
   isSubmitted: submittedReducer,
   areFetched: fetchedReducer,
-  areFiltered: filteredReducer
+  areFiltered: filteredReducer,
+  isDownloaded: downloadedReducer
 });
