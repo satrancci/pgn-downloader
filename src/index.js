@@ -7,14 +7,8 @@ import thunk from 'redux-thunk';
 import App from './components/App';
 import reducers from './reducers';
 
-const initialValues = {
-  formValues: {
-    username: ''
-  },
-  games: []
-}
 
-const store = createStore(reducers, initialValues, applyMiddleware(thunk));
+const store = createStore(reducers, applyMiddleware(thunk));
 
 ReactDOM.render(
     <Provider store={store}>

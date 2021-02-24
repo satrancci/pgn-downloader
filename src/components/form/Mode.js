@@ -26,7 +26,6 @@ const Mode = (props) => {
       <label>
         <i className="handshake icon"></i>
         Mode
-        {props.modes !== undefined ? props.modes.map((m) => ` ${m} `) : null}
       </label>
       <div className="field">
         <div className="ui checkbox">

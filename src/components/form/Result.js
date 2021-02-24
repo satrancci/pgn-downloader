@@ -35,7 +35,6 @@ const Result = (props) => {
       <label>
         <i className="thumbs up icon"></i>
         Result
-        {props.results !== undefined ? props.results.map((r) => ` ${r} `) : null}
       </label>
       <div className="field">
         <div className="ui checkbox">

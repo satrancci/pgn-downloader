@@ -5,7 +5,7 @@ const DateRange = (props) => {
       <div className="field">
         <label>
           <i className="calendar alternate outline icon"></i>
-          Date From {props.dateRangeFrom}
+          Date From
         </label>
         <input
           id="date-range-from"
@@ -23,7 +23,7 @@ const DateRange = (props) => {
       <div className="field">
         <label>
           <i className="calendar alternate outline icon"></i>
-          Date To {props.dateRangeTo}
+          Date To
         </label>
         <input
           id="date-range-to"

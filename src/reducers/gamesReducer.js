@@ -7,6 +7,9 @@ const gamesReducer = (games=[], action) => {
         case 'STORE_GAMES':
           return action.payload.games;
 
+        case 'CLEAR_GAMES':
+          return []
+
         case 'FILTER_BY_TIMECLASS':
           return games.filter(game => action.payload.timeClasses.includes(game.time_class));
 

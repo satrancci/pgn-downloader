@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { fetchGames, storeFormValues, filterGames } from "../actions";
+import { fetchGames, storeFormValues, filterGames, updateStateToDefault, updateSubmitted, updateFetched, updateFiltered } from "../actions";
 import { validateUsername, validateDateRange, validateRatingRange } from "./formValidators";
 
 import Username from "./form/Username";
@@ -11,7 +11,6 @@ import Mode from "./form/Mode";
 import Result from "./form/Result";
 import OpponentRatingRange from "./form/OpponentRatingRange";
 import SubmitButton from "./form/SubmitButton";
-import DownloadButton from "./DownloadButton";
 
 const CUR_DATE =
   new Date().getUTCFullYear() + "/" + "0" + (new Date().getUTCMonth() + 1);
@@ -78,6 +77,8 @@ const Form = (props) => {
 
   // callback for Submit
   const onSubmitCallback = async () => {
+    props.updateStateToDefault(); // clear everything from previous submit
+
     const [userValidated, userValidatedErrorMessage] = await validateUsername(username);
     //console.log('userValidated:', userValidated);
     (!userValidated) ? setUsernameError(userValidatedErrorMessage) : setUsernameError(null);
@@ -102,10 +103,13 @@ const Form = (props) => {
 
     const onSubmitValidated = async (values) => {
       props.storeFormValues(values);
+      props.updateSubmitted(1);
       await props.fetchGames();
+      props.updateFetched(1); 
       props.filterGames();
+      props.updateFiltered(1);
     }
-    if (formValid === true) {
+    if (formValid) {
       const values = {};
       Object.assign(
         values,
@@ -168,23 +172,13 @@ const Form = (props) => {
 
         <SubmitButton onSubmitCallback={onSubmitCallback} />
       </div>
-
-      <DownloadButton />
-
-      <div>
-        <p>{false ? null : JSON.stringify(props.formValues) /* for debugging */}</p>
-      </div>
-      <div>
-        <p>{true ? null : props.games.length /* for debugging */}</p>
-      </div>
     </div>
   );
 };
 
 const mapStateToProps = (state) => {
   return {
-    formValues: state.formValues,
-    games: state.games,
+    state: state
   };
 };
 
@@ -192,4 +186,8 @@ export default connect(mapStateToProps, {
   storeFormValues,
   fetchGames,
   filterGames,
+  updateStateToDefault,
+  updateSubmitted,
+  updateFetched,
+  updateFiltered
 })(Form);

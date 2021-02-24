@@ -1,13 +1,25 @@
-import React from 'react';
-import Form from './Form';
+import React from "react";
+import { connect } from "react-redux";
+import Form from "./Form";
+import Loader from "./Loader";
+import Download from "./Download";
 
+const App = ({state}) => {
 
-const App = () => {
   return (
     <div className="ui container">
-      <Form />
+    { (!state.isSubmitted || state.isDownloaded) ? <Form/> : null}
+    { ((state.isSubmitted && !state.areFetched && !state.areFiltered)) ? <Loader/> : null }
+    { (state.isSubmitted && state.areFetched && state.areFiltered && !state.isDownloaded) ? <Download/> : null}
     </div>
   );
 };
 
-export default App;
+
+const mapStateToProps = (state) => {
+  return {
+    state: state
+  };
+};
+
+export default connect(mapStateToProps)(App);

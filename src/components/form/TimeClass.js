@@ -43,9 +43,6 @@ const TimeClass = (props) => {
       <label>
         <i className="clock icon"></i>
         Time Control
-        {props.timeClasses !== undefined
-          ? props.timeClasses.map((t) => ` ${t}  `)
-          : null}
       </label>
       <div className="field">
         <div className="ui checkbox">
