@@ -4,7 +4,7 @@ const OpponentRatingRange = (props) => {
       <div className="field">
         <label>
           <i className="users icon"></i>
-          Opponent Rating From {props.opponentRatingFrom}
+          Opponent Rating From
         </label>
         <input
           id="rating-range-from"
@@ -24,7 +24,7 @@ const OpponentRatingRange = (props) => {
       <div className="field">
         <label>
           <i className="users icon"></i>
-          Opponent Rating To {props.opponentRatingTo}
+          Opponent Rating To
         </label>
         <input
           id="rating-range-to"

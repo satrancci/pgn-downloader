@@ -25,7 +25,6 @@ const Color = (props) => {
       <label>
         <i className="chess board icon"></i>
         Color
-        {props.colors !== undefined ? props.colors.map((c) => ` ${c} `) : null}
       </label>
       <div className="field">
         <div className="ui checkbox">
