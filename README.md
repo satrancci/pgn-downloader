@@ -1,4 +1,4 @@
-# A simple PGN Downloader
+# PGN Downloader
 
 The app is available at [https://pgn-downloader.vercel.app/](https://pgn-downloader.vercel.app/). 
 
