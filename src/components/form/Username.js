@@ -4,7 +4,7 @@ const Username = (props) => {
     <div className="field">
       <label>
         <i className="user icon"></i>
-        Username {props.username}
+        Username
       </label>
       <input
         id="username" 
