@@ -33,7 +33,7 @@ const Form = (props) => {
   const [formValid, setFormValid] = useState(null);
 
   // callback for Username
-  const onUsernameInputChangeCallback = username => setUsername(username.toLowerCase());
+  const onUsernameInputChangeCallback = username => setUsername(username.trim().toLowerCase());
 
   // callbacks for DateRange
   const onDateRangeFromInputChangeCallback = dateRangeFrom => setDateRangeFrom(dateRangeFrom);
